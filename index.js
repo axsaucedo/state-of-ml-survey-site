@@ -17,6 +17,7 @@ dt = dt.select(...origColNames);
 // window.colNames = colNames;
 window.dt = dt;
 
+Chart.register(ColorSchemesPlugin);
 
 // Global charts object
 var charts = [];
@@ -29,14 +30,15 @@ for (let i = 0; i < origColNames.length; i++) {
 	const chartCanvas = $("<canvas id='chart-"+i+"'></canvas>");
 	chartContainer.append(chartCanvas)
 
-    const chartType = multiChoiceCols.includes(i) ? "bar"  : "pie";
-
-	console.log($("#chart-"+i));
+    const chartType = multiChoiceCols.includes(i) ? "bar"  : "radar";
 
     const chart = new Chart($("#chart-"+i), {
       type: chartType,
       options: {
         plugins: {
+			colorschemes: {
+				scheme: 'brewer.DarkTwo8'
+			},
             colors: {
                 forceOverride: true
             }
@@ -46,7 +48,6 @@ for (let i = 0; i < origColNames.length; i++) {
 
     charts.push(chart);
 }
-console.log(charts);
 
 $('#table').html(dt.toHTML()).children().attr('id', 'demo').ready(function() { loadTable() });
 
@@ -126,7 +127,6 @@ function afterFilter(tf) {
         }
         window.chartData = chartData;
         for (let chartIndex = 0; chartIndex < chartData.length; chartIndex++) {
-            console.log(charts[chartIndex]);
             updateChart(charts[chartIndex], Object.keys(chartData[chartIndex]), Object.values(chartData[chartIndex]))
         }
 	}
@@ -134,6 +134,7 @@ function afterFilter(tf) {
 }
 
 function updateChart(chart, labels, data) {
+// TODO: Hide charts that don't have any data
     chart.data = {
         labels: labels,
         datasets: [{
