@@ -5,10 +5,10 @@ import 'https://code.jquery.com/jquery-3.6.0.min.js'
 
 let dt = await aq.loadCSV('data.csv'); 
 
-const origColNames = dt.columnNames();
-const multiChoiceCols = [7,17,19,23];
+const origColNames = dt.columnNames().slice(1, -2);
+const multiChoiceCols = [7, 8, 17, 19, 23];
 // Drop first and last columns
-dt = dt.select(...origColNames.slice(1, -2));
+dt = dt.select(...origColNames);
 //// Rename columns
 //dt = dt.select(aq.names(...colNames));
 //// Drop columns
@@ -29,7 +29,7 @@ for (let i = 0; i < origColNames.length; i++) {
 	const chartCanvas = $("<canvas id='chart-"+i+"'></canvas>");
 	chartContainer.append(chartCanvas)
 
-    const chartType = "bar" ? multiChoiceCols.includes(i) : "pie";
+    const chartType = multiChoiceCols.includes(i) ? "bar"  : "pie";
 
 	console.log($("#chart-"+i));
 
