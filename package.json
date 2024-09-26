@@ -1,0 +1,12 @@
+{
+  "name": "chart-test",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "description": "test charts",
+  "author": "axsaucedo",
+  "dependencies": {
+    "@pola-rs/browser": "^0.0.1-alpha",
+    "arquero": "^7.1.0"
+  }
+}
