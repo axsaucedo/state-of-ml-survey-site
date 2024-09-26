@@ -22,9 +22,18 @@ window.dt = dt;
 var charts = [];
 
 for (let i = 0; i < origColNames.length; i++) {
-    $("#charts").prepend("<div class='col-md-3'><canvas id='chart-"+i+"'></canvas></div>")
+	const chartContainer = $("<div class='col-md-3'></div>");
+	chartContainer.append("<h4>"+origColNames[i]+"</h4>")
+    $("#charts").append(chartContainer);
+
+	const chartCanvas = $("<canvas id='chart-"+i+"'></canvas>");
+	chartContainer.append(chartCanvas)
+
     const chartType = "bar" ? multiChoiceCols.includes(i) : "pie";
-    const chart = new Chart($("chart-"+i),{
+
+	console.log($("#chart-"+i));
+
+    const chart = new Chart($("#chart-"+i), {
       type: chartType,
       options: {
         plugins: {
@@ -34,6 +43,7 @@ for (let i = 0; i < origColNames.length; i++) {
         }
       }
     });
+
     charts.push(chart);
 }
 console.log(charts);
@@ -116,6 +126,7 @@ function afterFilter(tf) {
         }
         window.chartData = chartData;
         for (let chartIndex = 0; chartIndex < chartData.length; chartIndex++) {
+            console.log(charts[chartIndex]);
             updateChart(charts[chartIndex], Object.keys(chartData[chartIndex]), Object.values(chartData[chartIndex]))
         }
 	}
