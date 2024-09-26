@@ -3,14 +3,22 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vanilla Sass Boilerplate</title>
-    <script src="https://cdn.jsdelivr.net/npm/arquero@latest"></script>
-    <script type="module" src="index.js" defer></script>
+    <title>The state of prod ML survey</title>
+	<link rel="stylesheet" href="https://unpkg.com/tablefilter@0.7.2/dist/tablefilter/style/tablefilter.css"
   </head>
   <body>
     <main class="container">
-      <h1>Hello, Sass!</h1>
-      <p>This is a simple example of using Sass with HTML.</p>
+      <h1>The State of Production ML Survey</h1>
+      <p>Slice dice.</p>
     </main>
-  </body>
+
+<!-- @import countries-table.html -->
+
+<div id="table"></div>
+
+</body>
+
+<script src="https://cdn.jsdelivr.net/npm/arquero@latest"></script>
+<script src="https://unpkg.com/tablefilter@0.7.2/dist/tablefilter/tablefilter.js"></script>
+<script type="module" src="index.js" defer="defer"></script>
 </html>
