@@ -13,12 +13,20 @@
       <p>Slice dice.</p>
     </main>
 
-<div class="list-group" id="myList" role="tablist">
-	<a class="list-group-item list-group-item-action active" data-bs-toggle="list" href="#chart-section-1" role="tab">Home</a>
-	<a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#chart-section-2" role="tab">Profile</a>
-	<a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#chart-section-3" role="tab">Messages</a>
-	<a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#chart-section-4" role="tab">Settings</a>
-</div>
+<ul class="nav nav-tabs">
+    <li class="nav-item">
+        <a class="list-group-item list-group-item-action nav-link active" data-bs-toggle="list" href="#chart-section-1" role="tab">1) Your Team - ML & Scope</a>
+    </li>
+    <li class="nav-item">
+        <a class="list-group-item list-group-item-action nav-link" data-bs-toggle="list" href="#chart-section-2" role="tab">2) Your MLOps Stack - Platform & Components</a>
+    </li>
+    <li class="nav-item">
+        <a class="list-group-item list-group-item-action nav-link" data-bs-toggle="list" href="#chart-section-3" role="tab">3) Your Organisation - Ecosystem & Maturity</a>
+    </li>
+    <li class="nav-item">
+        <a class="list-group-item list-group-item-action nav-link" data-bs-toggle="list" href="#chart-section-4" role="tab">4) About You - Role & Demographics</a>
+    </li>
+</ul>
 
 <div class="tab-content">
 	<div class="tab-pane active" role="tabpanel" id="chart-section-1">
@@ -37,7 +45,7 @@
 
 <div id="charts" class="row"></div>
 
-<div id="table"></div>
+<div id="table" class="table-responsive"></div>
 
 </body>
 

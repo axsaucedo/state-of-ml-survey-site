@@ -6,7 +6,17 @@ import 'https://code.jquery.com/jquery-3.6.0.min.js'
 let dt = await aq.loadCSV('data.csv'); 
 
 const origColNames = dt.columnNames().slice(1, -2);
-const multiChoiceCols = [7, 8, 17, 19, 23];
+const multiChoiceCols = [1, 2, 5, 20, 22];
+const COL_WIDTH="20em";
+const LONG_COL_WIDTH="40em";
+
+let colWidths = Array(origColNames.length).fill(COL_WIDTH);
+for (const i of multiChoiceCols) {
+    console.log(i);
+    colWidths[i] = LONG_COL_WIDTH;
+}
+console.log(colWidths)
+
 // Drop first and last columns
 dt = dt.select(...origColNames);
 //// Rename columns
@@ -30,7 +40,7 @@ var charts = [];
 for (let i = 0, j = 0; i < origColNames.length; i++) {
 	
 	const chartContainer = $("<div></div>");
-	chartContainer.append("<div style='color: rgb(68, 254, 227) !important; height: 60px; overflow: scroll'>"+origColNames[i]+"</div>")
+	chartContainer.append("<div style='color: rgb(68, 254, 227) !important; height: 80px; overflow: scroll' class='text-center d-flex align-items-center'>"+origColNames[i]+"</div>")
 
 	// Choose the right section based on the distributions
 	if (i > chartSections[j]) {
@@ -48,7 +58,7 @@ for (let i = 0, j = 0; i < origColNames.length; i++) {
 		chartContainer.addClass("col-md-9");
 	}
 	else {
-		chartContainer.addClass("col-md-3");
+		chartContainer.addClass("col-md-2");
 	}
 
     const chartType = multiChoiceCols.includes(i) ? "bar"  : "pie";
@@ -78,7 +88,13 @@ for (let i = 0, j = 0; i < origColNames.length; i++) {
 
 $('#table').html(dt.toHTML()).children().attr('id', 'demo').ready(function() { loadTable() });
 
+function tableAddBootstrapClasses() {
+    $("#table table").addClass("table table-striped-columns table-bordered table-sm table-hover align-middle");
+}
+
 function loadTable() {
+	
+	tableAddBootstrapClasses();
 
     var tfConfig = {
         base_path: 'https://unpkg.com/tablefilter@0.7.2/dist/tablefilter/',
@@ -90,12 +106,24 @@ function loadTable() {
         status: true,
         status_bar: true,
 
+        col_widths: colWidths,
+
         auto_filter: {
             delay: 500 //milliseconds
         },
 
         /* sorting feature */
-        extensions: [{ name: 'sort' }]
+        extensions: [{ name: 'sort' }],
+
+        /** Bootstrap integration */
+
+        // aligns filter at cell bottom when Bootstrap is enabled
+        filters_cell_tag: 'th',
+
+        // allows Bootstrap table styling
+        themes: [{
+            name: 'transparent'
+        }]
 
     };
 
