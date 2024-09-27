@@ -51,17 +51,19 @@ for (let i = 0, j = 0; i < origColNames.length; i++) {
 	const chartTab = $("#chart-section-"+(j+1)+" .row");
     chartTab.append(chartContainer);
 
+	if (multiChoiceCols.includes(i)) {
+        chartContainer.append("<div id='inpChart"+i+"' class='form-check form-switch'></div>")
+		chartContainer.addClass("col-md-2");
+	}
+	else {
+        chartContainer.append("<div id='slcChart"+i+"' class='form-check form-switch'></div>")
+		chartContainer.addClass("col-md-6");
+	}
+
 	const chartCanvas = $("<canvas id='chart-"+i+"'></canvas>");
 	chartContainer.append(chartCanvas)
 
-	if (multiChoiceCols.includes(i)) {
-		chartContainer.addClass("col-md-9");
-	}
-	else {
-		chartContainer.addClass("col-md-2");
-	}
-
-    const chartType = multiChoiceCols.includes(i) ? "bar"  : "pie";
+    const chartType = multiChoiceCols.includes(i) ? "pie"  : "bar";
 
     const chart = new Chart($("#chart-"+i), {
       type: chartType,
@@ -92,12 +94,16 @@ function tableAddBootstrapClasses() {
     $("#table table").addClass("table table-striped-columns table-bordered table-sm table-hover align-middle");
 }
 
+function filtersAddBootstrapClasses() {
+    $("input[type='checkbox']").addClass("form-check-input");
+}
+
 function loadTable() {
 	
 	tableAddBootstrapClasses();
 
     var tfConfig = {
-        base_path: 'https://unpkg.com/tablefilter@0.7.2/dist/tablefilter/',
+        //base_path: 'https://unpkg.com/tablefilter@0.7.2/dist/tablefilter/',
         alternate_rows: true,
         rows_selected: {
             text: 'Displayed rows: '
@@ -128,10 +134,19 @@ function loadTable() {
     };
 
     // Adding column filters
+    let customFilterIds = [];
     for (let i = 0; i < origColNames.length; i++) {
-        if (multiChoiceCols.includes(i)) continue;
-        tfConfig["col_" + i] = "checklist";
+        if (multiChoiceCols.includes(i)) {
+            customFilterIds.push("inpChart" + i);
+            tfConfig["col_" + i] = "input";
+        }
+        else {
+            customFilterIds.push("slcChart" + i);
+            tfConfig["col_" + i] = "checklist";
+        }
     }
+    tfConfig["external_flt_ids"] = customFilterIds;
+    console.log(customFilterIds)
 
 
     var tf = new TableFilter('demo', tfConfig);
@@ -144,8 +159,7 @@ function loadTable() {
 
     tf.init();
 
-    // Run once
-    //afterFilter();
+    filtersAddBootstrapClasses();
 
 }
 
@@ -198,5 +212,3 @@ function updateChart(chart, labels, data) {
     }
     chart.update()
 }
-
-window.aq = aq
