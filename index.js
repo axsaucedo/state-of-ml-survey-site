@@ -19,25 +19,52 @@ window.dt = dt;
 
 Chart.register(ColorSchemesPlugin);
 
+const themes = ["brewer.YlGnBu9", "brewer.GnBu9", "brewer.GnBu9", "brewer.PuBuGn9", "brewer.PuBu9", "brewer.BuPu9", "brewer.RdPu9", "brewer.PuRd9", "brewer.OrRd9", "brewer.YlOrRd9", "brewer.YlOrBr9"];
+const chartSections = [5, 14, 22];
+
+Chart.defaults.color = '#fff';
+
 // Global charts object
 var charts = [];
 
-for (let i = 0; i < origColNames.length; i++) {
-	const chartContainer = $("<div class='col-md-3'></div>");
-	chartContainer.append("<h4>"+origColNames[i]+"</h4>")
-    $("#charts").append(chartContainer);
+for (let i = 0, j = 0; i < origColNames.length; i++) {
+	
+	const chartContainer = $("<div></div>");
+	chartContainer.append("<div style='color: rgb(68, 254, 227) !important; height: 60px; overflow: scroll'>"+origColNames[i]+"</div>")
+
+	// Choose the right section based on the distributions
+	if (i > chartSections[j]) {
+		j++;
+	}
+
+	// Select the row object inside the respective section ID
+	const chartTab = $("#chart-section-"+(j+1)+" .row");
+    chartTab.append(chartContainer);
 
 	const chartCanvas = $("<canvas id='chart-"+i+"'></canvas>");
 	chartContainer.append(chartCanvas)
 
-    const chartType = multiChoiceCols.includes(i) ? "bar"  : "radar";
+	if (multiChoiceCols.includes(i)) {
+		chartContainer.addClass("col-md-9");
+	}
+	else {
+		chartContainer.addClass("col-md-3");
+	}
+
+    const chartType = multiChoiceCols.includes(i) ? "bar"  : "pie";
 
     const chart = new Chart($("#chart-"+i), {
       type: chartType,
       options: {
+		indexAxis: 'y',
+		responsive: true,
+		maintainAspectRatio: true,
         plugins: {
+			legend: {
+				display: false
+			},
 			colorschemes: {
-				scheme: 'brewer.DarkTwo8'
+				scheme: themes[i % themes.length-1]
 			},
             colors: {
                 forceOverride: true
