@@ -1,7 +1,39 @@
 import 'https://code.jquery.com/jquery-3.6.0.min.js'
 
-
-//const colNames = ["time", "job", "role", "company", "industry", "org_size", "models_now", "models_future", "modality", "usecase", "components", "registry", "featurestore", "vector", "etl", "training", "platform", "serving", "infra", "time_taken", "org_setup", "lib_use", "cloud", "pct", "challenges", "satisfied", "important", "mature", "gender", "age", "country", "monitoring", "foundation"];
+const chartStyles = [
+	// 1
+	"bar", // libraries
+	"bar", // modality
+	"pie", // usecase
+	"radar", // timetoprod
+	"doughnut", // cloud
+	"pie", // challenges
+	// 2)
+	"bar", // registry
+	"bar", // feature store
+	"bar", // vector
+	"bar", // etl
+	"bar", // training
+	"bar", // serving
+	"bar", // monitoring
+	"bar", // data
+	"bar", // llm
+	// 3)
+	"bar", // industry
+	"radar", // orgsize
+	"pie", // company
+	"radar", // modelsnow
+	"radar", // modelsfuture
+	"polarArea", // orgsetup
+	"polarArea", // inference
+	"bar", // infra
+	// 4)
+	"bar", // jf
+	"bar", // role
+	"bar", // age
+	"pie", // country
+	"bar", // identify
+];
 
 let dt = await aq.loadCSV('data.csv'); 
 
@@ -27,12 +59,15 @@ dt = dt.select(...origColNames);
 // window.colNames = colNames;
 window.dt = dt;
 
+// Register chartjs plugins
 Chart.register(ColorSchemesPlugin);
+Chart.register(ChartDataLabels);
 
 const themes = ["brewer.YlGnBu9", "brewer.GnBu9", "brewer.GnBu9", "brewer.PuBuGn9", "brewer.PuBu9", "brewer.BuPu9", "brewer.RdPu9", "brewer.PuRd9", "brewer.OrRd9", "brewer.YlOrRd9", "brewer.YlOrBr9"];
 const chartSections = [5, 14, 22];
 
 Chart.defaults.color = '#fff';
+Chart.defaults.borderColor = '#434659';
 
 // Global charts object
 var charts = [];
@@ -53,28 +88,26 @@ for (let i = 0, j = 0; i < origColNames.length; i++) {
 
 	if (multiChoiceCols.includes(i)) {
         chartContainer.append("<div id='inpChart"+i+"' class='form-check form-switch'></div>")
-		chartContainer.addClass("col-md-2");
+		chartContainer.addClass("col-md-6");
 	}
 	else {
         chartContainer.append("<div id='slcChart"+i+"' class='form-check form-switch'></div>")
 		chartContainer.addClass("col-md-6");
 	}
 
-	const chartCanvas = $("<canvas id='chart-"+i+"'></canvas>");
+	const chartCanvas = $("<canvas style='height: 300em' id='chart-"+i+"'></canvas>");
 	chartContainer.append(chartCanvas)
 
-    const chartType = multiChoiceCols.includes(i) ? "pie"  : "bar";
+    //const chartType = multiChoiceCols.includes(i) ? "bar"  : "bar";
 
     const chart = new Chart($("#chart-"+i), {
-      type: chartType,
+      type: chartStyles[i],
       options: {
 		indexAxis: 'y',
 		responsive: true,
 		maintainAspectRatio: true,
+		aspectRatio: 1.2,
         plugins: {
-			legend: {
-				display: false
-			},
 			colorschemes: {
 				scheme: themes[i % themes.length-1]
 			},
@@ -104,6 +137,7 @@ function loadTable() {
 
     var tfConfig = {
         //base_path: 'https://unpkg.com/tablefilter@0.7.2/dist/tablefilter/',
+        // TODO: Add base path with blank css to ermove errors
         alternate_rows: true,
         rows_selected: {
             text: 'Displayed rows: '
@@ -113,10 +147,6 @@ function loadTable() {
         status_bar: true,
 
         col_widths: colWidths,
-
-        auto_filter: {
-            delay: 500 //milliseconds
-        },
 
         /* sorting feature */
         extensions: [{ name: 'sort' }],
@@ -178,10 +208,11 @@ function afterFilter(tf) {
                 if (multiChoiceCols.includes(j)) {
                     let multiValues = row[j].split(",");
                     for (let k = 0; k < multiValues.length; k++) {
-                        if (multiValues[k] in chartData[j]) {
-                            chartData[j][multiValues[k]] += 1;
+						let multiValue = multiValues[k].trim()
+                        if (multiValue in chartData[j]) {
+                            chartData[j][multiValue] += 1;
                         } else {
-                            chartData[j][multiValues[k]] = 1;
+                            chartData[j][multiValue] = 1;
                         }
                     }
                 }
@@ -203,11 +234,11 @@ function afterFilter(tf) {
 }
 
 function updateChart(chart, labels, data) {
-// TODO: Hide charts that don't have any data
+    // TODO: Hide charts that don't have any data
     chart.data = {
         labels: labels,
         datasets: [{
-          data: data,
+          data: data
         }]
     }
     chart.update()
